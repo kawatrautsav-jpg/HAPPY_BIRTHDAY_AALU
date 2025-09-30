@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Day for a Special Person</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    <!-- NEW: YouTube Iframe API for video events -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <style>
+        /* Custom styles to bring the magic */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .great-vibes-font, .dancing-script-font {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
+
+        /* --- Page Transitions --- */
+        .page {
+            display: none; /* Hidden by default */
+            min-height: 100vh;
+            width: 100vw;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        .page.active {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- Landing Page & Confetti --- */
+        #landingPage {
+            /* CHANGE THIS: Replace the placeholder URL with a direct link to your favorite photo of her! */
+            background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('WhatsApp Image 2025-09-24 at 17.11.20.jpeg');
+            background-size: contain;
+            background-position: center;
+        }
+        #namePromptModal {
+            transition: all 0.3s ease-in-out;
+        }
+        .confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* --- Wordle Game --- */
+        #wordlePage { 
+            /* UPDATED: Added a background image and positioning */
+            background: linear-gradient(rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.5)), url('IMG_7940.heic');
+            background-size: cover;
+            background-position: center;
+            position: relative; /* For heart container */
+            overflow: hidden; /* Hide hearts outside */
+        }
+        .tile {
+            width: 60px; height: 60px;
+            border: 2px solid #000000;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; font-weight: bold; text-transform: uppercase;
+        }
+        .key {
+            cursor: pointer; transition: background-color 0.2s ease;
+        }
+        .tile.correct, .key.correct { background-color: #39e461 !important; color: white; border-color: #f87171; }
+        .tile.present, .key.present { background-color: #f6f329 !important; color: white; border-color: #fb923c; }
+        .tile.absent, .key.absent { background-color: #838080 !important; color: white; border-color: #787c7e; }
+        .tile.filled { border-color: #878a8c; }
+        .tile.shake { animation: shake 0.5s; }
+        @keyframes shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-4px); }
+            40%, 60% { transform: translateX(4px); }
+        }
+
+        /* NEW: Styles for the flying hearts animation */
+        #heart-container {
+            position: fixed; /* Changed to fixed to float above all pages */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5; /* Raised z-index to ensure it's on top */
+        }
+        .flying-heart {
+            position: absolute;
+            bottom: -50px;
+            color: #ff69b4; /* Hot pink */
+            animation-name: fly-up;
+            animation-timing-function: linear;
+            animation-iteration-count: 1;
+            opacity: 0;
+        }
+        @keyframes fly-up {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+
+
+        /* --- Love Letter Page --- */
+        #letterPage {
+            background-color: #fdf5e6;
+            background-image: url('https://www.transparenttextures.com/patterns/old-paper.png');
+        }
+        #letterContainer {
+            background-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        #letterPage .collage-img {
+            position: absolute;
+            border: 6px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            animation: float 8s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(-3deg); }
+            50% { transform: translateY(-20px) rotate(3deg); }
+        }
+
+        /* --- Memory Game --- */
+        #memoryGamePage { 
+            /* UPDATED: Changed from a solid gradient to a background image with an overlay */
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('461603190545f37419cb51faa02d0878.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative; /* For skip button */ 
+        }
+        .memory-card {
+            width: 190px; height: 190px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+        .memory-card.is-flipped { transform: rotateY(180deg); }
+        .memory-card .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden;
+            border-radius: 12px;
+        }
+        .card-back {
+            background-color: #1a1a1a;
+            border: 4px solid #ffffff;
+            color: #ffffff;
+            text-shadow: 0 0 10px #ff69b4;
+            animation: pulse-heart 2s infinite ease-in-out; /* NEW: Pulse animation */
+        }
+        .card-front {
+            transform: rotateY(180deg);
+            background-size: cover;
+            background-position: center;
+        }
+        @keyframes pulse-heart {
+            0%, 100% { text-shadow: 0 0 10px #ff69b4, 0 0 15px #ff69b4; }
+            50% { text-shadow: 0 0 20px #ff007f, 0 0 35px #ff007f; }
+        }
+        .message-popup {
+            position: fixed;
+            top: 50%; left: 50%;
+            padding: 1rem 2rem;
+            border-radius: 20px;
+            color: white;
+            font-size: 2rem;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .message-popup.show { 
+            animation: bounce-in 0.5s forwards; /* NEW: Bounce-in animation */
+        }
+        @keyframes bounce-in {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            60% { opacity: 1; transform: translate(-50%, -60%) scale(1.1); }
+            100% { opacity: 1; transform: translate(-50%, -60%) scale(1); }
+        }
+        .message-popup.wuhuuuuu { background: #28a745; }
+        .message-popup.uh-oh { background: #dc3545; }
+
+
+        /* --- Poker Game --- */
+        #pokerPage {
+            /* UPDATED: New vibrant background and removed 3D perspective */
+            background: linear-gradient(to bottom right, #4a00e0, #8e2de2, #ff0084);
+            overflow: hidden; /* Keep stars contained */
+        }
+        /* NEW: Sparkle/star animation for the background */
+        .sparkle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: sparkle-animation 5s linear infinite;
+            box-shadow: 0 0 5px white, 0 0 10px white;
+        }
+        @keyframes sparkle-animation {
+            0% { transform: translateY(100vh) scale(0); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        .poker-table {
+            width: 90vw; height: 50vh; max-width: 800px;
+            border: 20px solid #5d4037;
+            background: radial-gradient(ellipse at center, #067d40 0%, #034020 100%);
+             /* UPDATED: Simplified shadow for a flat look */
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5), inset 0 0 25px rgba(0,0,0,0.5);
+        }
+
+        /* UPDATED: Card containers are now flex items, not absolutely positioned */
+        .card-container {
+            width: 70px; height: 100px;
+            transition: all 0.5s ease-out;
+        }
+        
+        .playing-card {
+            width: 100%; height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+        }
+        .playing-card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%; height: 100%;
+            backface-visibility: hidden;
+            border-radius: 8px;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.4);
+        }
+        .card-front {
+             background-color: white;
+             transform: rotateY(180deg);
+        }
+        .card-back {
+             background: repeating-linear-gradient(45deg, #b22222, #b22222 10px, #8b0000 10px, #8b0000 20px);
+        }
+        
+        /* UPDATED: Player hands now use absolute positioning but cards inside are arranged by flex */
+        #aaluHand, #usavHand {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        #aaluHand { top: 20px; }
+        #usavHand { bottom: 20px; }
+        
+        .community-cards {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 15px;
+        }
+        
+        .speech-bubble {
+            /* UPDATED: Complete redesign for a proper speech bubble look */
+            max-width: 250px;
+            background-color: white;
+            color: #333;
+            padding: 1rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            font-size: 1.1rem;
+            line-height: 1.4;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .speech-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border: 15px solid transparent;
+            border-top-color: white;
+            border-bottom: 0;
+            margin-left: -15px;
+            margin-bottom: -15px;
+        }
+        #aaluSpeechBubble:after {
+            top: 0;
+            border-bottom-color: white;
+            border-top: 0;
+            border-right: 0;
+            margin-top: -20px;
+        }
+
+        /* NEW: Animation for card dealing */
+        @keyframes deal-in {
+            from {
+                opacity: 0;
+                transform: translateY(-200px) rotateZ(90deg) scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateZ(0deg) scale(1);
+            }
+        }
+        .deal-animation {
+            animation: deal-in 0.5s ease-out forwards;
+        }
+
+
+        /* --- Finale Page --- */
+        #finalePage {
+            /* UPDATED: Changed to a lighter, more colorful gradient */
+            background: linear-gradient(to top, #ff9a9e 0%, #fecfef 100%);
+        }
+        .timeline-item {
+            opacity: 0;
+            transition: all 1s ease-out;
+            transform: translateX(-50px); /* NEW: Default slide from left */
+        }
+        /* NEW: Rule for alternating timeline items */
+        #finalePage .flex-col.md\:flex-row-reverse.timeline-item {
+             transform: translateX(50px);
+        }
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0); /* Final position */
+        }
+        
+        /* NEW: STYLES FOR THE VIDEO FINALE PAGE */
+        #videoPage {
+            background-color: #1a1a1a;
+            overflow: hidden;
+        }
+        #video-container {
+            width: 90vw;
+            max-width: 960px;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            border-radius: 1rem;
+            box-shadow: 0 0 50px rgba(255, 223, 186, 0.4);
+            overflow: hidden; /* Ensures the iframe corners are rounded */
+            transform: scale(0.9);
+            transition: transform 1s ease-in-out;
+        }
+        #video-container.visible {
+            transform: scale(1);
+        }
+        #video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .curtain {
+            position: absolute;
+            top: 0;
+            width: 50vw;
+            height: 100vh;
+            background-image: radial-gradient(circle at center, #8B0000 0%, #B22222 100%);
+            box-shadow: inset -10px 0 20px rgba(0,0,0,0.5);
+            transition: transform 2s cubic-bezier(0.86, 0, 0.07, 1);
+            z-index: 100;
+        }
+        #curtainLeft {
+            left: 0;
+            transform-origin: left;
+        }
+        #curtainRight {
+            right: 0;
+            transform-origin: right;
+        }
+        .curtain.open {
+            transform: scaleX(0);
+        }
+        .curtain.closed {
+            transform: scaleX(1);
+        }
+        
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Audio element for birthday song -->
+    <audio id="birthdaySong" loop>
+        <source src="birthday_2.mp3" type="audio/mpeg">
+    </audio>
+    
+    <!-- NEW: Audio element for the game background music -->
+    <audio id="gameMusic" loop>
+        <!-- A playful, upbeat instrumental track is great here -->
+        <source src="Cartoon Hoedown  Media Right Productions (No Copyright Music).mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- NEW: Audio element for the letter background music -->
+    <audio id="letterMusic" loop>
+        <!-- A calm, romantic instrumental track is perfect here -->
+        <source src="ssvid.net--Happy-Piano-Music-Life-Blossom-Spring-Joy-Flowers-Copyright.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- NEW: Audio for the memory and poker game suite -->
+    <audio id="gameSuiteMusic" loop>
+        <source src="ssvid.net---Sweet-Morning.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- NEW: Audio elements for poker game sound effects -->
+    <audio id="cardSwooshSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_29cbf2fb45.mp3"></audio>
+    <audio id="heartChimeSound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_9920183b1a.mp3"></audio>
+
+    <!-- Canvas for confetti -->
+    <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+    <!-- Generic Message Popup for Memory Game -->
+    <div id="messagePopup" class="message-popup dancing-script-font"></div>
+
+    <!-- Heart container is now global -->
+    <div id="heart-container"></div>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 1: Landing Page / Secret Entry                               -->
+    <!-- =================================================================== -->
+    <div id="landingPage" class="page active flex-col items-center justify-center p-4">
+        <!-- The Main Birthday Message (Initially Hidden) -->
+        <div id="birthdayMessageContainer" class="hidden text-center">
+            <h1 class="text-6xl md:text-9xl great-vibes-font text-white text-shadow-lg animate-pulse" style="text-shadow: 0 0 15px rgba(255,255,255,0.7), 0 0 25px rgba(255,105,180,0.5);">
+                Happy 22nd Birthday Aalu!
+            </h1>
+            <button onclick="navigateToPage('wordlePage')" class="mt-12 bg-white text-pink-500 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-pink-100 transition duration-300">
+                Click me for your first surprise!
+            </button>
+        </div>
+
+        <!-- The Modal for Name Prompt -->
+        <div id="namePromptModal" class="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-2xl text-center max-w-sm w-full">
+            <div class="mb-4">
+                <h2 id="promptQuestion" class="text-2xl font-semibold text-gray-700">Password please</h2>
+                <p id="promptHint" class="text-sm text-gray-500 mt-1">HINT : What's your name?</p>
+            </div>
+            <input id="nameInput" type="text" class="w-full p-3 border-2 border-pink-200 rounded-lg text-center focus:outline-none focus:border-pink-400 transition" placeholder="Type here...">
+            <button id="submitNameBtn" class="mt-4 w-full bg-pink-500 text-white font-bold py-3 rounded-lg hover:bg-pink-600 transition duration-300">
+                Enter
+            </button>
+        </div>
+    </div>
+    
+    <!-- =================================================================== -->
+    <!-- PAGE 2: Wordle Game                                                 -->
+    <!-- =================================================================== -->
+    <div id="wordlePage" class="page flex-col items-center justify-center p-2 md:p-4 space-y-4">
+        <h1 class="text-4xl dancing-script-font text-gray-700">You got it! You're the smartest.</h1>
+        <div id="wordleGrid" class="grid grid-rows-6 gap-1.5">
+            <!-- Tiles will be generated by JS -->
+        </div>
+        <div id="wordleKeyboard" class="space-y-2">
+            <!-- Keys will be generated by JS -->
+        </div>
+        <div id="wordleSuccessMessage" class="hidden text-center bg-white p-6 rounded-lg shadow-lg">
+            <p class="text-2xl text-green-600 dancing-script-font">Not really...hehehehehe</p>
+            <p class="text-lg mt-2">Now, for something from the heart...</p>
+            <button onclick="navigateToPage('letterPage')" class="mt-4 bg-rose-500 text-white font-bold py-2 px-6 rounded-full hover:bg-rose-600 transition">Read Your Letter</button>
+        </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 3: Love Letter & Collage                                       -->
+    <!-- =================================================================== -->
+    <div id="letterPage" class="page items-center justify-center p-4 relative">
+        <!-- Placeholder Images for Collage -->
+        <!-- Replace # with your image paths -->
+        <img src="IMG_2835.heic" alt="Collage Picture" class="collage-img" style="top: 10%; left: 5%; width: 250px; animation-delay: 0s;">
+        <img src="IMG_9738.heic" alt="Collage Picture" class="collage-img" style="top: 15%; right: 8%; width: 250px; animation-delay: -2s;">
+        <img src="IMG_8568.JPG" alt="Collage Picture" class="collage-img" style="bottom: 12%; left: 10%; width: 230px; animation-delay: -4s;">
+        <img src="1d89f78c-e291-485f-bf5c-bbd4aa3cbbed.JPG" alt="Collage Picture" class="collage-img" style="bottom: 15%; right: 5%; width: 250px; animation-delay: -6s;">
+        
+        <div id="letterContainer" class="w-full max-w-3xl h-[80vh] p-8 md:p-12 rounded-lg relative overflow-y-auto">
+            <h1 class="text-5xl dancing-script-font text-rose-800 mb-6 text-center">To My Dearest Aalu,</h1>
+            <div class="text-lg text-gray-700 space-y-4 leading-relaxed" style="font-family: 'Montserrat', sans-serif;">
+                <p>
+                    My dearest Aalu...Happy 22nd Birthday!, you're officially <s>older</s> stronger , <s>cuter</s> funnier....(you are cute though ngl) and still somehow able to win every argument with just one look..hehe
+                </p>
+                <p>
+                    Thank you for being the person you are , my unofficial therapist, and the only person who can make me laugh when I’m trying really hard to stay annoyed. Life with you feels like my favorite inside joke equal parts chaos and magic!
+                </p>
+                <p>
+                    You’re the best part of my story, my favorite person, and honestly… the only “homepage” I ever want to come back to. 
+                </p>
+                <p>
+                    Here’s to more adventures, more memories, and more fries that you’ll definitely end up stealing from me.
+                </p>
+                <p> 
+                    I LOVE YOU AALU!❤️
+                </p>
+                <p class="text-right mt-8 dancing-script-font text-2xl text-rose-800">
+                    Forever and always,<br>Utsav
+                </p>
+            </div>
+            <div class="text-center mt-12">
+                <button onclick="navigateToPage('memoryGamePage')" class="bg-rose-800 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-rose-900 transition duration-300">
+                    Ready for another game?
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- =================================================================== -->
+    <!-- PAGE 4: Memory Game                                                 -->
+    <!-- =================================================================== -->
+    <div id="memoryGamePage" class="page flex-col items-center justify-center p-4 space-y-6">
+        <h1 class="text-4xl dancing-script-font text-white text-center">Find the matching moments!</h1>
+
+        <!-- Temporary Skip Button for Testing -->
+        <button onclick="navigateToPage('pokerPage')" class="absolute top-5 right-5 bg-white/20 text-white font-semibold py-2 px-5 rounded-full hover:bg-white/30 transition text-sm">
+            Skip Game &rarr;
+        </button>
+
+        <div id="memoryGrid" class="grid grid-cols-4 gap-2 md:gap-4">
+            <!-- Memory cards generated by JS -->
+        </div>
+        <div id="memoryGameSuccess" class="hidden text-center">
+             <p class="text-2xl text-white dancing-script-font">Okay okay.. i admit you do have a good memory! But do you know how to beat me in a game of poker? 😉</p>
+            <button onclick="navigateToPage('pokerPage')" class="mt-4 bg-pink-500 text-white font-bold py-2 px-6 rounded-full hover:bg-pink-600 transition">Let's Play</button>
+        </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- PAGE 5: Poker Scene                                                 -->
+    <!-- =================================================================== -->
+    <div id="pokerPage" class="page flex-col items-center justify-center relative">
+        <!-- NEW: Container for sparkle background -->
+        <div id="sparkleContainer" class="absolute top-0 left-0 w-full h-full"></div>
+
+        <!-- UPDATED: Heading position adjusted */ -->
+        <h1 class="absolute top-10 md:top-16 text-5xl dancing-script-font text-white" style="text-shadow: 0 0 15px rgba(255,105,180,0.5); z-index: 10;">Gambling our love (A visual representation)</h1>
+
+        <!-- NEW: Player names are now outside the table -->
+        <div class="absolute text-white text-3xl font-bold" style="top: 18%; left: 50%; transform: translateX(-50%); text-shadow: 0 2px 5px rgba(0,0,0,0.5);">Aalu</div>
+        <div class="absolute text-white text-3xl font-bold" style="bottom: 18%; left: 50%; transform: translateX(-50%); text-shadow: 0 2px 5px rgba(0,0,0,0.5);">Usav</div>
+
+        <div class="poker-table rounded-full relative flex items-center justify-center">
+            <!-- Player Names REMOVED from here -->
+
+            <!-- Pot -->
+            <div id="pot" class="relative w-24 h-24 flex items-center justify-center">
+                 <div id="usavBet" class="absolute text-5xl text-pink-400" style="transition: all 1s ease-in-out;">❤️</div>
+                 <div id="aaluBet" class="absolute text-5xl text-pink-400" style="transition: all 1s ease-in-out;">❤️</div>
+            </div>
+
+            <!-- Player Hands -->
+            <div id="aaluHand" class="player-hand flex space-x-2"></div>
+            <div id="usavHand" class="player-hand flex space-x-2"></div>
+            
+            <!-- Community Cards -->
+            <div id="communityCards" class="community-cards"></div>
+            
+        </div>
+        
+        <!-- Speech Bubbles (outside the table for correct perspective) -->
+        <div id="usavSpeechBubble" class="speech-bubble hidden" style="position: absolute; bottom: 28%; left: 50%; transform: translateX(-50%); z-index: 20;"></div>
+
+        <div id="pokerControls" class="absolute bottom-10 text-center">
+             <button id="pokerButton" class="bg-yellow-500 text-gray-800 font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-yellow-400 transition">Start</button>
+        </div>
+    </div>
+
+
+    <!-- =================================================================== -->
+    <!-- PAGE 6: The Finale / Memories Timeline                            -->
+    <!-- =================================================================== -->
+    <div id="finalePage" class="page flex-col items-center justify-start p-4 md:p-12 overflow-y-auto">
+        <div class="w-full max-w-4xl mx-auto">
+            <h1 class="text-6xl text-center great-vibes-font text-black mb-16">A walk down memory lane...</h1>
+            
+            <div class="space-y-16">
+                <!-- Timeline Item 1 -->
+                <div class="timeline-item flex flex-col md:flex-row items-center">
+                    <img src="lp_image.HEIC" alt="Memory" class="w-full md:w-1/2 rounded-lg shadow-2xl">
+                    <div class="p-8 text-black">
+                        <h2 class="text-3xl dancing-script-font">“The Beginning of You”</h2>
+                        <p class="mt-2">From the tiniest version of you… those little giggles, curious eyes, and the start of the most beautiful story. Who knew that baby would one day grow into the person who would mean the world to me?</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="timeline-item flex flex-col md:flex-row-reverse items-center">
+                    <img src="IMG_7835.HEIC" alt="Memory" class="w-full md:w-1/2 rounded-lg shadow-2xl">
+                    <div class="p-8 text-black text-right">
+                        <h2 class="text-3xl dancing-script-font">"The Best Chapter Yet"</h2>
+                        <p class="mt-2">...and then, fast forward to us now , side by side. Every laugh we’ve shared, every late-night talk, every silly fight, and every adventure has turned into memories I’ll always hold close. With you, even the simplest moments feel magical</p>
+                    </div>
+                </div>
+
+                 <!-- Timeline Item 3 -->
+                <div class="timeline-item flex flex-col md:flex-row items-center">
+                    <img src="IMG_1835.HEIC" alt="Memory" class="w-full md:w-1/2 rounded-lg shadow-2xl">
+                    <div class="p-8 text-black">
+                        <h2 class="text-3xl dancing-script-font">“One More to the Story”</h2>
+                        <p class="mt-2">…and today, another milestone , 1 more year added to your incredible journey. One more year of being you: kind, strong, funny, and the best part of my life. Here’s to celebrating not just your birthday, but everything you are and everything we’ll keep building together..for me you'll always be #1</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Final Birthday Wish at the bottom -->
+            <div id="finalWish" class="timeline-item text-center py-24 mt-16">
+                 <h1 class="text-7xl md:text-9xl great-vibes-font text-black" style="text-shadow: 0 0 25px #ff69b4, 0 0 40px #ff69b4;">
+                    Happy Birthday, my love.
+                </h1>
+                <!-- NEW: Button to the final surprise -->
+                <button onclick="navigateToPage('videoPage')" class="mt-12 bg-black text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-800 transition duration-300">
+                    before you go, one last surprise...
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: PAGE 7 - THEATRE VIDEO FINALE -->
+    <div id="videoPage" class="page flex-col items-center justify-center p-4 relative">
+        <div id="video-container">
+            <!-- 
+                IMPORTANT INSTRUCTION:
+                1. Upload your friends' video to YouTube and set it to "Unlisted".
+                2. Click "Share", then "Embed", and copy the video ID from the URL.
+                   Example: https://www.youtube.com/embed/VIDEO_ID_HERE
+                3. Paste ONLY the VIDEO_ID_HERE part into the initVideoPage function in the script below.
+            -->
+            <div id="youtube-player"></div>
+        </div>
+        <!-- Theatre Curtains -->
+        <div id="curtainLeft" class="curtain"></div>
+        <div id="curtainRight" class="curtain"></div>
+    </div>
+
+
+    <script>
+    // =======================================================================
+    // --- GLOBAL NAVIGATION & STATE ---
+    // =======================================================================
+    let currentPage = 'landingPage';
+    const birthdaySong = document.getElementById('birthdaySong');
+    const gameMusic = document.getElementById('gameMusic');
+    const letterMusic = document.getElementById('letterMusic');
+    const gameSuiteMusic = document.getElementById('gameSuiteMusic'); // NEW
+    let heartInterval = null; // For continuous hearts
+
+    function navigateToPage(pageId) {
+        // Stop any currently playing music based on the page we are LEAVING
+        if (currentPage === 'landingPage') {
+            birthdaySong.pause();
+            birthdaySong.currentTime = 0;
+        }
+        if (currentPage === 'wordlePage') {
+            // Only stop the game music. Letter music might be playing as a transition.
+            gameMusic.pause();
+            gameMusic.currentTime = 0;
+        }
+        if (currentPage === 'letterPage') {
+            // When we leave the letter page, the letter music should stop.
+            letterMusic.pause();
+            letterMusic.currentTime = 0;
+        }
+        // NEW: Stop the game suite music when leaving the poker page
+        if (currentPage === 'pokerPage') {
+            gameSuiteMusic.pause();
+            gameSuiteMusic.currentTime = 0;
+        }
+
+
+        // UPDATED: Stop hearts when leaving the letter page
+        if (currentPage === 'letterPage' && pageId === 'memoryGamePage') {
+            stopFlyingHearts();
+        }
+
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => page.classList.remove('active'));
+        
+        const newPage = document.getElementById(pageId);
+        if (newPage) {
+            newPage.classList.add('active');
+            currentPage = pageId;
+            // Initialize page-specific logic
+            if (pageId === 'wordlePage') {
+                gameMusic.play(); // NEW: Start game music
+                initWordle();
+            }
+            if (pageId === 'memoryGamePage') {
+                gameSuiteMusic.play(); // NEW: Start game suite music
+                initMemoryGame();
+            }
+            if (pageId === 'pokerPage') initPokerGame();
+            if (pageId === 'finalePage') initFinalePage();
+            // NEW: Initialize video page
+            if (pageId === 'videoPage') initVideoPage();
+        }
+    }
+
+
+    // =======================================================================
+    // --- PAGE 1: LANDING PAGE LOGIC ---
+    // =======================================================================
+    const nameInput = document.getElementById('nameInput');
+    const submitNameBtn = document.getElementById('submitNameBtn');
+    const promptQuestion = document.getElementById('promptQuestion');
+    const promptHint = document.getElementById('promptHint'); // Added this
+    let isFirstQuestion = true;
+
+    function handleNameSubmit() {
+        const name = nameInput.value.trim().toLowerCase();
+        if (isFirstQuestion) {
+            promptQuestion.textContent = 'Nah... what do I call you?';
+            promptHint.style.display = 'none'; // And this to hide the hint
+            nameInput.value = '';
+            nameInput.focus();
+            isFirstQuestion = false;
+        } else {
+            if (name === 'aalu') {
+                // SUCCESS! Trigger the birthday surprise.
+                document.getElementById('namePromptModal').style.transform = 'scale(0)';
+                document.getElementById('namePromptModal').style.opacity = '0';
+                
+                setTimeout(() => {
+                    document.getElementById('namePromptModal').classList.add('hidden');
+                    document.getElementById('birthdayMessageContainer').classList.remove('hidden');
+                    
+                    // Play song and launch confetti
+                    birthdaySong.play();
+                    launchConfetti();
+                }, 500);
+
+            } else {
+                // Shake effect on wrong answer
+                document.getElementById('namePromptModal').classList.add('shake');
+                setTimeout(() => document.getElementById('namePromptModal').classList.remove('shake'), 500);
+                nameInput.value = '';
+                nameInput.focus();
+            }
+        }
+    }
+    
+    submitNameBtn.addEventListener('click', handleNameSubmit);
+    nameInput.addEventListener('keyup', (event) => {
+        if (event.key === 'Enter') {
+            handleNameSubmit();
+        }
+    });
+
+    function launchConfetti() {
+        const canvas = document.getElementById('confettiCanvas');
+        const myConfetti = confetti.create(canvas, {
+            resize: true,
+            useWorker: true
+        });
+
+        const duration = 5 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        const interval = setInterval(function() {
+            const timeLeft = animationEnd - Date.now();
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
+            }
+            const particleCount = 50 * (timeLeft / duration);
+            myConfetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+            myConfetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+        }, 250);
+    }
+
+    // NEW: Function to create a single flying heart
+    function createSingleHeart() {
+        const container = document.getElementById('heart-container');
+        if (!container) return;
+
+        const heart = document.createElement('div');
+        heart.classList.add('flying-heart');
+        heart.innerText = '♥';
+
+        const size = Math.random() * 1.5 + 0.75; // size between 0.75rem and 2.25rem
+        const duration = Math.random() * 4 + 5; // duration between 5s and 9s
+        const startX = Math.random() * 100;
+
+        heart.style.fontSize = `${size}rem`;
+        heart.style.animationDuration = `${duration}s`;
+        heart.style.left = `${startX}vw`;
+
+        container.appendChild(heart);
+
+        setTimeout(() => {
+            heart.remove();
+        }, duration * 1000);
+    }
+
+    // UPDATED: Renamed and modified to be continuous
+    function startFlyingHearts() {
+        if (heartInterval) return; // Already running
+        heartInterval = setInterval(createSingleHeart, 300); // Create a heart every 300ms
+    }
+
+    // NEW: Function to stop the hearts
+    function stopFlyingHearts() {
+        clearInterval(heartInterval);
+        heartInterval = null;
+        const container = document.getElementById('heart-container');
+        if(container) container.innerHTML = ''; // Clear any remaining hearts
+    }
+
+
+    // =======================================================================
+    // --- PAGE 2: WORDLE LOGIC ---
+    // =======================================================================
+    function initWordle() {
+        const WORD_TO_GUESS = "SNACK";
+        const grid = document.getElementById('wordleGrid');
+        const keyboardContainer = document.getElementById('wordleKeyboard');
+        const keysLayout = [
+            "QWERTYUIOP",
+            "ASDFGHJKL",
+            "ZXCVBNM"
+        ];
+        let currentRow = 0;
+        let currentCol = 0;
+        let guesses = Array(6).fill(null).map(() => Array(5).fill(""));
+        const keyStates = {};
+
+        // Create Grid
+        for (let r = 0; r < 6; r++) {
+            const rowEl = document.createElement('div');
+            rowEl.className = 'grid grid-cols-5 gap-1.5';
+            for (let c = 0; c < 5; c++) {
+                const tile = document.createElement('div');
+                tile.className = 'tile';
+                tile.id = `tile-${r}-${c}`;
+                rowEl.appendChild(tile);
+            }
+            grid.appendChild(rowEl);
+        }
+        
+        // Create Keyboard
+        keysLayout.forEach(row => {
+            const rowEl = document.createElement('div');
+            rowEl.className = 'flex justify-center space-x-1.5';
+            row.split('').forEach(key => {
+                const keyEl = document.createElement('button');
+                keyEl.className = 'key h-14 w-8 md:w-12 bg-gray-300 rounded-md font-semibold';
+                keyEl.textContent = key;
+                keyEl.dataset.key = key;
+                rowEl.appendChild(keyEl);
+            });
+            keyboardContainer.appendChild(rowEl);
+        });
+        const bottomRow = document.createElement('div');
+        bottomRow.className = 'flex justify-center space-x-1.5';
+        bottomRow.innerHTML = `
+            <button class="key h-14 px-4 bg-gray-300 rounded-md font-semibold" data-key="ENTER">ENTER</button>
+            ${keyboardContainer.lastChild.innerHTML}
+            <button class="key h-14 px-4 bg-gray-300 rounded-md font-semibold" data-key="BACKSPACE">⌫</button>
+        `;
+        keyboardContainer.replaceChild(bottomRow, keyboardContainer.lastChild);
+
+
+        function updateGrid() {
+            for (let r = 0; r < 6; r++) {
+                for (let c = 0; c < 5; c++) {
+                    const tile = document.getElementById(`tile-${r}-${c}`);
+                    tile.textContent = guesses[r][c];
+                    if (guesses[r][c]) {
+                        tile.classList.add('filled');
+                    } else {
+                        tile.classList.remove('filled');
+                    }
+                }
+            }
+        }
+        
+        function handleKeyPress(key) {
+            if (currentRow > 5) return;
+            key = key.toUpperCase();
+
+            if (key === 'BACKSPACE' && currentCol > 0) {
+                currentCol--;
+                guesses[currentRow][currentCol] = "";
+            } else if (key === 'ENTER' && currentCol === 5) {
+                submitGuess();
+            } else if (key.length === 1 && key >= 'A' && key <= 'Z' && currentCol < 5) {
+                guesses[currentRow][currentCol] = key;
+                currentCol++;
+            }
+            updateGrid();
+        }
+        
+        function submitGuess() {
+            const guess = guesses[currentRow].join('');
+            const answer = WORD_TO_GUESS;
+            
+            const guessArray = guess.split('');
+            const answerArray = answer.split('');
+            const rowTiles = grid.children[currentRow].children;
+            
+            // Mark correct letters first
+            for(let i = 0; i < 5; i++) {
+                if(guessArray[i] === answerArray[i]) {
+                    rowTiles[i].classList.add('correct');
+                    keyStates[guessArray[i]] = 'correct';
+                    answerArray[i] = null; // Prevent re-matching
+                }
+            }
+            
+            // Mark present and absent letters
+            for(let i = 0; i < 5; i++) {
+                if(!rowTiles[i].classList.contains('correct')) {
+                    if(answerArray.includes(guessArray[i])) {
+                        rowTiles[i].classList.add('present');
+                        if (keyStates[guessArray[i]] !== 'correct') {
+                            keyStates[guessArray[i]] = 'present';
+                        }
+                        answerArray[answerArray.indexOf(guessArray[i])] = null;
+                    } else {
+                        rowTiles[i].classList.add('absent');
+                        keyStates[guessArray[i]] = 'absent';
+                    }
+                }
+            }
+            updateKeyboard();
+
+            if (guess === answer) {
+                 gameMusic.pause(); // Stop game music
+                 gameMusic.currentTime = 0;
+                 letterMusic.play(); // NEW: Start letter music
+                 setTimeout(() => {
+                    document.getElementById('wordleGrid').classList.add('hidden');
+                    document.getElementById('wordleKeyboard').classList.add('hidden');
+                    document.getElementById('wordleSuccessMessage').classList.remove('hidden');
+                    // UPDATED: Trigger the continuous heart animation
+                    startFlyingHearts();
+                 }, 1000);
+                 currentRow = 99; // Game over
+            } else {
+                 currentRow++;
+                 currentCol = 0;
+            }
+        }
+
+        function updateKeyboard() {
+            document.querySelectorAll('.key').forEach(keyEl => {
+                const key = keyEl.dataset.key;
+                if (keyStates[key]) {
+                    keyEl.classList.add(keyStates[key]);
+                }
+            });
+        }
+        
+        keyboardContainer.addEventListener('click', (e) => {
+            if (e.target.matches('[data-key]')) {
+                handleKeyPress(e.target.dataset.key);
+            }
+        });
+        
+        document.addEventListener('keydown', (e) => {
+             if(currentPage === 'wordlePage') {
+                handleKeyPress(e.key);
+             }
+        });
+    }
+
+    // =======================================================================
+    // --- PAGE 4: MEMORY GAME LOGIC ---
+    // =======================================================================
+    function initMemoryGame() {
+        const grid = document.getElementById('memoryGrid');
+        grid.innerHTML = ''; // Clear previous game
+        // --- IMPORTANT: REPLACE THESE 8 PLACEHOLDER URLs ---
+        // Upload 8 of your favorite square photos and paste the links here.
+        const cardImages = [
+            'IMG_1009.HEIC',
+            'IMG_1434.HEIC',
+            'IMG_1962.heic',
+            'IMG_2040.HEIC',
+            'IMG_2211.jpg',
+            'IMG_2621.heic',
+            'IMG_3064.HEIC',
+            'IMG_8686.heic'
+        ];
+        
+        const gameCards = [...cardImages, ...cardImages]
+            .sort(() => 0.5 - Math.random());
+
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let lockBoard = false;
+
+        gameCards.forEach(imageSrc => {
+            const card = document.createElement('div');
+            card.className = 'memory-card';
+            card.dataset.image = imageSrc;
+            card.innerHTML = `
+                <div class="card-face card-back flex items-center justify-center text-5xl">♥</div>
+                <div class="card-face card-front" style="background-image: url('${imageSrc}')"></div>
+            `;
+            grid.appendChild(card);
+            card.addEventListener('click', flipCard);
+        });
+
+        function flipCard() {
+            if (lockBoard || this === flippedCards[0] || this.classList.contains('is-matched')) return;
+            
+            this.classList.add('is-flipped');
+            flippedCards.push(this);
+
+            if (flippedCards.length === 2) {
+                lockBoard = true;
+                checkForMatch();
+            }
+        }
+        
+        function checkForMatch() {
+            const [card1, card2] = flippedCards;
+            const isMatch = card1.dataset.image === card2.dataset.image;
+            isMatch ? handleMatch(card1, card2) : handleMismatch(card1, card2);
+        }
+
+        function showPopupMessage(message, type) {
+            const popup = document.getElementById('messagePopup');
+            popup.textContent = message;
+            popup.className = `message-popup dancing-script-font ${type} show`;
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 1000);
+        }
+        
+        function handleMatch(card1, card2) {
+            showPopupMessage('Wuhuuuuu!', 'wuhuuuuu');
+            card1.classList.add('is-matched');
+            card2.classList.add('is-matched');
+            setTimeout(() => {
+                card1.style.visibility = 'hidden';
+                card2.style.visibility = 'hidden';
+                matchedPairs++;
+                if (matchedPairs === cardImages.length) {
+                     document.getElementById('memoryGrid').classList.add('hidden');
+                     document.getElementById('memoryGameSuccess').classList.remove('hidden');
+                }
+                resetBoard();
+            }, 1000);
+        }
+        
+        function handleMismatch(card1, card2) {
+            showPopupMessage('Uh-oh', 'uh-oh');
+            setTimeout(() => {
+                card1.classList.remove('is-flipped');
+                card2.classList.remove('is-flipped');
+                resetBoard();
+            }, 1200);
+        }
+
+        function resetBoard() {
+            [flippedCards, lockBoard] = [[], false];
+        }
+    }
+
+    // =======================================================================
+    // --- PAGE 5: POKER SCENE LOGIC ---
+    // =======================================================================
+    function initPokerGame() {
+        const button = document.getElementById('pokerButton');
+        const usavSpeechBubble = document.getElementById('usavSpeechBubble');
+        const cardSwooshSound = document.getElementById('cardSwooshSound');
+        const heartChimeSound = document.getElementById('heartChimeSound');
+        let gameState = 0;
+
+        const usavHandDiv = document.getElementById('usavHand');
+        const aaluHandDiv = document.getElementById('aaluHand');
+        const communityDiv = document.getElementById('communityCards');
+        const pot = document.getElementById('pot');
+        
+        // Add sparkles to the background
+        const sparkleContainer = document.getElementById('sparkleContainer');
+        sparkleContainer.innerHTML = '';
+        for (let i = 0; i < 30; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            const size = Math.random() * 3 + 1;
+            sparkle.style.width = `${size}px`;
+            sparkle.style.height = `${size}px`;
+            sparkle.style.left = `${Math.random() * 100}vw`;
+            sparkle.style.animationDelay = `${Math.random() * 5}s`;
+            sparkle.style.animationDuration = `${Math.random() * 3 + 3}s`;
+            sparkleContainer.appendChild(sparkle);
+        }
+        
+        // Reset scene
+        button.textContent = 'Start';
+        button.disabled = false;
+        usavSpeechBubble.classList.add('hidden');
+        usavHandDiv.innerHTML = '';
+        aaluHandDiv.innerHTML = '';
+        communityDiv.innerHTML = '';
+        pot.style.transform = '';
+        document.getElementById('usavBet').style.transform = '';
+        document.getElementById('aaluBet').style.transform = '';
+
+        const createCardHTML = (rank, suit) => {
+            const suitSymbols = { '♠': 'text-black', '♦': 'text-red-600', '♥': 'text-red-600', '♣': 'text-black' };
+            return `
+                <div class="playing-card">
+                    <div class="card-face card-back"></div>
+                    <div class="card-face card-front flex flex-col justify-between p-1 text-2xl font-bold">
+                        <div class="${suitSymbols[suit]}">${rank}${suit}</div>
+                        <div class="${suitSymbols[suit]} self-end" style="transform: rotate(180deg);">${rank}${suit}</div>
+                    </div>
+                </div>
+            `;
+        };
+        
+        const dealCard = (targetDiv, cardHTML, delay) => {
+             const cardContainer = document.createElement('div');
+             cardContainer.className = 'card-container';
+             cardContainer.innerHTML = cardHTML;
+             targetDiv.appendChild(cardContainer);
+             
+             setTimeout(() => {
+                cardSwooshSound.play();
+                cardContainer.style.opacity = '0'; // For animation
+                cardContainer.classList.add('deal-animation');
+             }, delay);
+             return cardContainer.querySelector('.playing-card');
+        };
+        
+        const gameSequence = [
+            // 0: Bet
+            () => {
+                button.disabled = true;
+                heartChimeSound.play();
+                const usavBet = document.getElementById('usavBet');
+                const aaluBet = document.getElementById('aaluBet');
+                usavBet.style.transform = 'translateY(-40px)';
+                aaluBet.style.transform = 'translateY(40px)';
+                button.textContent = 'Deal Cards';
+                setTimeout(() => { button.disabled = false; }, 1000);
+            },
+            // 1: Deal Hands
+            (hands) => {
+                button.disabled = true;
+                hands.usav1 = dealCard(usavHandDiv, createCardHTML('A', '♠'), 100);
+                hands.usav2 = dealCard(usavHandDiv, createCardHTML('A', '♦'), 300);
+                hands.aalu1 = dealCard(aaluHandDiv, createCardHTML('Q', '♥'), 500);
+                hands.aalu2 = dealCard(aaluHandDiv, createCardHTML('Q', '♦'), 700);
+                setTimeout(() => {
+                     button.textContent = 'Show Hands';
+                     button.disabled = false;
+                }, 1200);
+            },
+            // 2: Show Hands & Speech bubble
+            (hands) => {
+                button.disabled = true;
+                hands.usav1.classList.add('is-flipped');
+                hands.usav2.classList.add('is-flipped');
+                hands.aalu1.classList.add('is-flipped');
+                hands.aalu2.classList.add('is-flipped');
+                
+                usavSpeechBubble.textContent = "Aww.. don't worry aalu.. no matter if you win or lose, you'll always be my queen!";
+                usavSpeechBubble.classList.remove('hidden');
+                button.textContent = 'Deal Flop';
+                setTimeout(() => { button.disabled = false; usavSpeechBubble.classList.add('hidden');}, 4000);
+            },
+            // 3: Deal Flop
+            (hands) => {
+                button.disabled = true;
+                hands.flop1 = dealCard(communityDiv, createCardHTML('A', '♣'), 100);
+                hands.flop2 = dealCard(communityDiv, createCardHTML('K', '♠'), 300);
+                hands.flop3 = dealCard(communityDiv, createCardHTML('K', '♦'), 500);
+                setTimeout(() => {
+                    hands.flop1.classList.add('is-flipped');
+                    hands.flop2.classList.add('is-flipped');
+                    hands.flop3.classList.add('is-flipped');
+                    button.textContent = 'Deal Turn';
+                    button.disabled = false;
+                }, 1000);
+            },
+            // 4: Deal Turn
+            (hands) => {
+                button.disabled = true;
+                hands.turn = dealCard(communityDiv, createCardHTML('Q', '♠'), 100);
+                setTimeout(() => {
+                    hands.turn.classList.add('is-flipped');
+                    button.textContent = 'Deal River';
+                    button.disabled = false;
+                }, 600);
+            },
+            // 5: Deal River & Win
+            (hands) => {
+                button.disabled = true;
+                hands.river = dealCard(communityDiv, createCardHTML('Q', '♣'), 100);
+                setTimeout(() => {
+                    hands.river.classList.add('is-flipped');
+                    setTimeout(() => {
+                        usavSpeechBubble.textContent = "Damn.. how does it feel like winning my love all the time? hehe";
+                        usavSpeechBubble.classList.remove('hidden');
+                        heartChimeSound.play();
+                        pot.style.transition = 'all 1.5s ease-in-out';
+                        /* UPDATED: Simplified transform for the pot animation */
+                        pot.style.transform = 'translateY(-200px)';
+                        button.textContent = 'See the finale...';
+                        button.disabled = false;
+                    }, 1500);
+                }, 600);
+            },
+            // 6: Go to next page
+            () => {
+                navigateToPage('finalePage');
+            }
+        ];
+
+        let dealtHands = {};
+        button.addEventListener('click', () => {
+            if (gameState < gameSequence.length) {
+                gameSequence[gameState](dealtHands);
+                gameState++;
+            }
+        });
+    }
+
+    // =======================================================================
+    // --- PAGE 6: FINALE TIMELINE LOGIC ---
+    // =======================================================================
+    function initFinalePage() {
+        const items = document.querySelectorAll('.timeline-item');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    if(entry.target.id === 'finalWish') {
+                        launchFinalConfetti();
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        items.forEach(item => {
+            observer.observe(item);
+        });
+    }
+
+    function launchFinalConfetti() {
+         const canvas = document.getElementById('confettiCanvas');
+         const myConfetti = confetti.create(canvas, {
+            resize: true,
+            useWorker: true
+        });
+        myConfetti({
+            particleCount: 200,
+            spread: 180,
+            origin: { y: 0.6 }
+        });
+    }
+
+    // NEW: LOGIC FOR THE THEATRE VIDEO FINALE PAGE
+    let player;
+    let isApiReady = false;
+    
+    // This function is required by the YouTube API and will be called automatically
+    function onYouTubeIframeAPIReady() {
+        isApiReady = true;
+    }
+
+    function initVideoPage() {
+        const videoContainer = document.getElementById('video-container');
+        const curtainLeft = document.getElementById('curtainLeft');
+        const curtainRight = document.getElementById('curtainRight');
+        
+        // Ensure curtains are closed initially
+        curtainLeft.classList.remove('open');
+        curtainRight.classList.remove('open');
+        curtainLeft.classList.add('closed');
+        curtainRight.classList.add('closed');
+        videoContainer.classList.remove('visible');
+
+        // IMPORTANT: Replace this placeholder ID with your YouTube video's ID
+        const videoId = 'gxu_91f4k4w'; 
+
+        if (isApiReady) {
+            if (player) {
+                player.destroy();
+            }
+            player = new YT.Player('youtube-player', {
+                height: '100%',
+                width: '100%',
+                videoId: videoId,
+                playerVars: {
+                    'playsinline': 1,
+                    'autoplay': 0, // Set to 1 to autoplay, 0 to require click
+                    'controls': 1,
+                    'rel': 0 // Don't show related videos at the end
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        } else {
+             // If API isn't ready yet, wait a moment and try again
+            setTimeout(initVideoPage, 100);
+        }
+    }
+
+    function onPlayerReady(event) {
+        // When the player is ready, open the curtains
+        const curtainLeft = document.getElementById('curtainLeft');
+        const curtainRight = document.getElementById('curtainRight');
+        const videoContainer = document.getElementById('video-container');
+
+        setTimeout(() => {
+            curtainLeft.classList.remove('closed');
+            curtainRight.classList.remove('closed');
+            curtainLeft.classList.add('open');
+            curtainRight.classList.add('open');
+            videoContainer.classList.add('visible');
+            // Optional: You can uncomment the line below to autoplay the video once curtains are open
+            event.target.playVideo(); // Autoplay now!
+        }, 1000); // Wait 1 second before opening curtains
+    }
+
+    function onPlayerStateChange(event) {
+        // YT.PlayerState.ENDED is 0, which means the video has finished playing.
+        if (event.data == YT.PlayerState.ENDED) {
+            const curtainLeft = document.getElementById('curtainLeft');
+            const curtainRight = document.getElementById('curtainRight');
+            const videoContainer = document.getElementById('video-container');
+            
+            // Close the curtains
+            videoContainer.classList.remove('visible');
+            curtainLeft.classList.remove('open');
+            curtainRight.classList.remove('open');
+            curtainLeft.classList.add('closed');
+            curtainRight.classList.add('closed');
+        }
+    }
+
+
+    // Initialize the first page
+    document.addEventListener('DOMContentLoaded', () => {
+        navigateToPage('landingPage');
+    });
+
+    </script>
+</body>
+</html>
+
